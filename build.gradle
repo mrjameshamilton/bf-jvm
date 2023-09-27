@@ -1,0 +1,23 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.9.10'
+    id 'application'
+}
+
+group = 'eu.jameshamilton'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("com.guardsquare:proguard-core:9.1.0")
+}
+
+kotlin {
+    jvmToolchain(20)
+}
+
+application {
+    mainClassName = 'MainKt'
+}
