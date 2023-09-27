@@ -76,6 +76,8 @@ fun main(args: Array<String>) {
                     label(body)
                 }
                 ']' -> {
+                    if (loopInfos.empty()) throw RuntimeException("Unexpected ']'")
+
                     val (body, exit) = loopInfos.pop()
                     aload_1()
                     iload_0()
@@ -84,6 +86,8 @@ fun main(args: Array<String>) {
                     label(exit)
                 }
             }
+
+            if (loopInfos.isNotEmpty()) throw RuntimeException("Too many '['")
 
             return_()
         }
