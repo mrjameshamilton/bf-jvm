@@ -3,6 +3,7 @@ package eu.jameshamilton;
 import proguard.classfile.ClassPool;
 import proguard.classfile.editor.ClassBuilder;
 import proguard.classfile.editor.CompactCodeAttributeComposer.Label;
+import proguard.classfile.instruction.InstructionUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,6 +15,7 @@ import static proguard.classfile.AccessConstants.STATIC;
 import static proguard.classfile.ClassConstants.NAME_JAVA_LANG_OBJECT;
 import static proguard.classfile.TypeConstants.BYTE;
 import static proguard.classfile.VersionConstants.CLASS_VERSION_1_6;
+import static proguard.classfile.instruction.InstructionUtil.arrayTypeFromInternalType;
 import static proguard.classfile.util.ClassUtil.externalClassName;
 import static proguard.io.util.IOUtil.writeJar;
 
@@ -29,7 +31,8 @@ public class Main {
                 code
                     .iconst_0()
                     .istore_0()
-                    .pushNewArray(Character.toString(BYTE), 30_000)
+                    .sipush(30_000)
+                    .newarray(arrayTypeFromInternalType(BYTE))
                     .astore_1();
 
                 record LoopInfo(Label body, Label exit) {}
