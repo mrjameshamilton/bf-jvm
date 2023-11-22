@@ -118,7 +118,7 @@ public class Main {
     }
 
     /**
-     * Read a char (8 bytes) from stdin and write it to the memory
+     * Read a char (1 byte) from stdin and write it to the memory
      * at the data pointer position.
      */
     private static void readChar(CompactCodeAttributeComposer code) {
