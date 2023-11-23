@@ -36,8 +36,16 @@ public class Main {
         var BfClass = new ClassBuilder(CLASS_VERSION_1_6, PUBLIC, "BF", NAME_JAVA_LANG_OBJECT)
             .addMethod(PUBLIC | STATIC, "main", "([Ljava/lang/String;)V", 65535, composer -> {
 
-                initializeDataPointer(composer);
-                initializeMemory(composer);
+                // Initialize memory.
+                composer
+                    .sipush(30_000)
+                    .newarray(arrayTypeFromInternalType(BYTE))
+                    .astore(MEMORY);
+
+                // Initialize data pointer.
+                composer
+                    .iconst_0()
+                    .istore(DATA_POINTER);
 
                 input.chars().forEach(c -> {
                     switch (c) {
@@ -62,27 +70,6 @@ public class Main {
             }).getProgramClass();
 
         writeJar(new ClassPool(BfClass), output, externalClassName(BfClass.getName()));
-    }
-
-    /**
-     * Initialize the data pointer to zero.
-     * The data pointer will be stored in slot {@link #DATA_POINTER}.
-     */
-    private static void initializeDataPointer(CompactCodeAttributeComposer composer) {
-        composer
-            .iconst_0()
-            .istore(DATA_POINTER);
-    }
-
-    /**
-     * Initialize the memory by creating an array of size 30,000.
-     * The array will be stored in slot {@link #MEMORY}.
-     */
-    private static void initializeMemory(CompactCodeAttributeComposer composer) {
-        composer
-            .sipush(30_000)
-            .newarray(arrayTypeFromInternalType(BYTE))
-            .astore(MEMORY);
     }
 
     /**
