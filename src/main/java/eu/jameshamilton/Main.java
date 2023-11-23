@@ -34,21 +34,21 @@ public class Main {
         var output = args[1];
 
         var BfClass = new ClassBuilder(CLASS_VERSION_1_6, PUBLIC, "BF", NAME_JAVA_LANG_OBJECT)
-            .addMethod(PUBLIC | STATIC, "main", "([Ljava/lang/String;)V", 65535, code -> {
+            .addMethod(PUBLIC | STATIC, "main", "([Ljava/lang/String;)V", 65535, composer -> {
 
-                initializeDataPointer(code);
-                initializeMemory(code);
+                initializeDataPointer(composer);
+                initializeMemory(composer);
 
                 input.chars().forEach(c -> {
                     switch (c) {
-                        case '>' -> move(code, 1);
-                        case '<' -> move(code, -1);
-                        case '+' -> add(code, 1);
-                        case '-' -> add(code, -1);
-                        case ',' -> printChar(code);
-                        case '.' -> readChar(code);
-                        case '[' -> loopBegin(code);
-                        case ']' -> loopEnd(code);
+                        case '>' -> move(composer, 1);
+                        case '<' -> move(composer, -1);
+                        case '+' -> add(composer, 1);
+                        case '-' -> add(composer, -1);
+                        case ',' -> printChar(composer);
+                        case '.' -> readChar(composer);
+                        case '[' -> loopBegin(composer);
+                        case ']' -> loopEnd(composer);
                         default -> {
                             // Ignore other characters.
                         }
@@ -57,7 +57,7 @@ public class Main {
 
                 if (!loops.isEmpty()) throw new RuntimeException("Too many '['");
 
-                code.return_();
+                composer.return_();
 
             }).getProgramClass();
 
@@ -68,8 +68,9 @@ public class Main {
      * Initialize the data pointer to zero.
      * The data pointer will be stored in slot {@link #DATA_POINTER}.
      */
-    private static void initializeDataPointer(CompactCodeAttributeComposer code) {
-        code.iconst_0()
+    private static void initializeDataPointer(CompactCodeAttributeComposer composer) {
+        composer
+            .iconst_0()
             .istore(DATA_POINTER);
     }
 
@@ -77,8 +78,9 @@ public class Main {
      * Initialize the memory by creating an array of size 30,000.
      * The array will be stored in slot {@link #MEMORY}.
      */
-    private static void initializeMemory(CompactCodeAttributeComposer code) {
-        code.sipush(30_000)
+    private static void initializeMemory(CompactCodeAttributeComposer composer) {
+        composer
+            .sipush(30_000)
             .newarray(arrayTypeFromInternalType(BYTE))
             .astore(MEMORY);
     }
@@ -88,8 +90,8 @@ public class Main {
      *
      * @param amount The amount to move the data pointer which can be positive or negative.
      */
-    private static void move(CompactCodeAttributeComposer code, int amount) {
-        code.iinc(DATA_POINTER, amount);
+    private static void move(CompactCodeAttributeComposer composer, int amount) {
+        composer.iinc(DATA_POINTER, amount);
     }
 
     /**
@@ -98,8 +100,9 @@ public class Main {
      * @param amount The amount to add to the value in memory at the data pointer which can be
      *               positive or negative.
      */
-    private static void add(CompactCodeAttributeComposer code, int amount) {
-        code.aload(MEMORY)
+    private static void add(CompactCodeAttributeComposer composer, int amount) {
+        composer
+            .aload(MEMORY)
             .iload(DATA_POINTER)
             .dup2()
             .baload()
@@ -111,8 +114,9 @@ public class Main {
     /**
      * Print the character in memory at the data pointer position to stdout.
      */
-    private static void printChar(CompactCodeAttributeComposer code) {
-        code.getstatic("java/lang/System", "in", "Ljava/io/InputStream;")
+    private static void printChar(CompactCodeAttributeComposer composer) {
+        composer
+            .getstatic("java/lang/System", "in", "Ljava/io/InputStream;")
             .aload(MEMORY)
             .iload(DATA_POINTER)
             .iconst_1()
@@ -124,8 +128,9 @@ public class Main {
      * Read a char (1 byte) from stdin and write it to the memory
      * at the data pointer position.
      */
-    private static void readChar(CompactCodeAttributeComposer code) {
-        code.getstatic("java/lang/System", "out", "Ljava/io/PrintStream;")
+    private static void readChar(CompactCodeAttributeComposer composer) {
+        composer
+            .getstatic("java/lang/System", "out", "Ljava/io/PrintStream;")
             .aload(MEMORY)
             .iload(DATA_POINTER)
             .baload()
@@ -139,10 +144,11 @@ public class Main {
      * <p/>
      * The {@link Label}s for loop body and loop exit are pushed onto the {@link #loops} stack.
      */
-    private static void loopBegin(CompactCodeAttributeComposer code) {
-        var loopInfo = loops.push(new LoopInfo(code.createLabel(), code.createLabel()));
+    private static void loopBegin(CompactCodeAttributeComposer composer) {
+        var loopInfo = loops.push(new LoopInfo(composer.createLabel(), composer.createLabel()));
 
-        code.aload(MEMORY)
+        composer
+            .aload(MEMORY)
             .iload(DATA_POINTER)
             .baload()
             .ifeq(loopInfo.exit)
@@ -155,12 +161,13 @@ public class Main {
      * <p/>
      * The {@link Label}s for loop body and loop exit are popped from the {@link #loops} stack.
      */
-    private static void loopEnd(CompactCodeAttributeComposer code) {
+    private static void loopEnd(CompactCodeAttributeComposer composer) {
         if (loops.empty()) throw new RuntimeException("Unexpected ']'");
 
         var loopInfo = loops.pop();
 
-        code.aload(MEMORY)
+        composer
+            .aload(MEMORY)
             .iload(DATA_POINTER)
             .baload()
             .ifne(loopInfo.body)
