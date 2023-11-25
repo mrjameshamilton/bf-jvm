@@ -99,6 +99,19 @@ public class Main {
     }
 
     /**
+     * Print the character in memory at the data pointer position to stdout.
+     */
+    private static void printChar(CompactCodeAttributeComposer composer) {
+        composer
+            .getstatic("java/lang/System", "out", "Ljava/io/PrintStream;")
+            .aload(MEMORY)
+            .iload(DATA_POINTER)
+            .baload()
+            .i2c()
+            .invokevirtual("java/io/PrintStream", "print", "(C)V");
+    }
+
+    /**
      * Read a char (1 byte) from stdin and write it to the memory
      * at the data pointer position.
      */
@@ -110,19 +123,6 @@ public class Main {
             .iconst_1()
             .invokevirtual("java/io/InputStream", "read", "([BII)I")
             .pop();
-    }
-
-    /**
-     * Print the character in memory at the data pointer position to stdout.
-     */
-    private static void printChar(CompactCodeAttributeComposer composer) {
-        composer
-            .getstatic("java/lang/System", "out", "Ljava/io/PrintStream;")
-            .aload(MEMORY)
-            .iload(DATA_POINTER)
-            .baload()
-            .i2c()
-            .invokevirtual("java/io/PrintStream", "print", "(C)V");
     }
 
     /**
