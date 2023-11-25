@@ -51,10 +51,10 @@ public class Main {
                     switch (c) {
                         case '>' -> move(composer, 1);
                         case '<' -> move(composer, -1);
-                        case '+' -> add(composer, 1);
-                        case '-' -> add(composer, -1);
-                        case ',' -> printChar(composer);
-                        case '.' -> readChar(composer);
+                        case '+' -> increment(composer, 1);
+                        case '-' -> increment(composer, -1);
+                        case ',' -> readChar(composer);
+                        case '.' -> printChar(composer);
                         case '[' -> loopBegin(composer);
                         case ']' -> loopEnd(composer);
                         default -> {
@@ -87,7 +87,7 @@ public class Main {
      * @param amount The amount to add to the value in memory at the data pointer which can be
      *               positive or negative.
      */
-    private static void add(CompactCodeAttributeComposer composer, int amount) {
+    private static void increment(CompactCodeAttributeComposer composer, int amount) {
         composer
             .aload(MEMORY)
             .iload(DATA_POINTER)
@@ -99,9 +99,10 @@ public class Main {
     }
 
     /**
-     * Print the character in memory at the data pointer position to stdout.
+     * Read a char (1 byte) from stdin and write it to the memory
+     * at the data pointer position.
      */
-    private static void printChar(CompactCodeAttributeComposer composer) {
+    private static void readChar(CompactCodeAttributeComposer composer) {
         composer
             .getstatic("java/lang/System", "in", "Ljava/io/InputStream;")
             .aload(MEMORY)
@@ -112,10 +113,9 @@ public class Main {
     }
 
     /**
-     * Read a char (1 byte) from stdin and write it to the memory
-     * at the data pointer position.
+     * Print the character in memory at the data pointer position to stdout.
      */
-    private static void readChar(CompactCodeAttributeComposer composer) {
+    private static void printChar(CompactCodeAttributeComposer composer) {
         composer
             .getstatic("java/lang/System", "out", "Ljava/io/PrintStream;")
             .aload(MEMORY)
