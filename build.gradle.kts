@@ -15,7 +15,7 @@ java {
         version = 21
     }
     application {
-        mainClass = "eu.jameshamilton.Main"
+        mainClass = "eu.jameshamilton.BfCompiler"
     }
 }
 

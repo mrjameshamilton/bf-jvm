@@ -22,7 +22,7 @@ import static proguard.io.util.IOUtil.writeJar;
 /**
  * Compiles the input Brainf*ck to Java bytecode, in a jar specified as the output.
  */
-public class Main {
+public class BfCompiler {
     private static final int DATA_POINTER = 0;
     private static final int MEMORY = 1;
     private static final Stack<LoopInfo> loops = new Stack<>();
