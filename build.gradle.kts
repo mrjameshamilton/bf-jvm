@@ -1,9 +1,10 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "eu.jameshamilton"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -12,6 +13,9 @@ repositories {
 java {
     toolchain {
         version = 21
+    }
+    application {
+        mainClass = "eu.jameshamilton.Main"
     }
 }
 
