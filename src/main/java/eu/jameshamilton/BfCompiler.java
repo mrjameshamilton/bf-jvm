@@ -34,7 +34,7 @@ public class BfCompiler {
         var output = args[1];
 
         var BfClass = new ClassBuilder(CLASS_VERSION_1_6, PUBLIC, "BF", NAME_JAVA_LANG_OBJECT)
-            .addMethod(PUBLIC | STATIC, "main", "([Ljava/lang/String;)V", 65535, composer -> {
+            .addMethod(PUBLIC | STATIC, "main", "([Ljava/lang/String;)V", 65_535, composer -> {
 
                 // Initialize memory.
                 composer
