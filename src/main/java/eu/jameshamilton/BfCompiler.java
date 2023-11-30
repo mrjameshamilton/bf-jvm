@@ -63,7 +63,7 @@ public class BfCompiler {
                     }
                 });
 
-                if (!loops.isEmpty()) throw new RuntimeException("Too many '['");
+                if (!loops.empty()) throw new RuntimeException("Too many '['");
 
                 composer.return_();
 
